@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import styled, { keyframes } from 'styled-components/macro';
 
 import { WEIGHTS } from '../../constants';
 import { formatPrice, pluralize, isNewShoe } from '../../utils';
@@ -36,11 +36,11 @@ const ShoeCard = ({
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
-          {variant === 'on-sale' && <SaleFlag>Sale</SaleFlag>}
-          {variant === 'new-release' && (
-            <NewFlag>Just released!</NewFlag>
-          )}
         </ImageWrapper>
+        {variant === 'on-sale' && <SaleFlag>Sale</SaleFlag>}
+        {variant === 'new-release' && (
+          <NewFlag>Just released!</NewFlag>
+        )}
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
@@ -73,15 +73,31 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  position: relative;
+`;
 
 const ImageWrapper = styled.div`
-  position: relative;
+  overflow: hidden;
+  border-radius: 16px 16px 4px 4px;
 `;
 
 const Image = styled.img`
   width: 100%;
-  border-radius: 16px 16px 4px 4px;
+  line-height: 0;
+  transition: transform 500ms, filter 1000ms;
+  transform-origin: center 90%;
+  will-change: transform;
+  
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    filter: brightness(90%);
+
+    ${Link}:hover &, ${Link}:focus & {
+      transform: scale(1.1);
+      transition: transform 150ms, filter 500ms;
+      filter: brightness(100%);
+    }
+  }
 `;
 
 const Row = styled.div`
@@ -121,6 +137,15 @@ const Flag = styled.div`
   font-weight: ${WEIGHTS.bold};
   color: var(--color-white);
   border-radius: 2px;
+  transition: transform 500ms;
+  will-change: transform;
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    ${Link}:hover &, ${Link}:focus & {
+      transform: scale(1.1);
+      transition: transform 150ms;
+    }
+  }
 `;
 
 const SaleFlag = styled(Flag)`
